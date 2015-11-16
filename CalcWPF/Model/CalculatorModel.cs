@@ -9,20 +9,23 @@ namespace CalcWPF.Model
 {
     class CalculatorModel
     {
+        private static readonly log4net.ILog log =
+                       log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private double result;
         private double accumulator;
         private string lastOperation;
         private bool freshDisplay;
         //private string display;
 
-        public enum CalculatorState {START,ACCUMULATE,COMPUTE,EVALUATED, POINT,ERROR};
+        public enum CalculatorState { START, ACCUMULATE, COMPUTE, EVALUATED, POINT, ERROR };
         private CalculatorState calculatorState;
 
         public string Display { get; set; }
 
-        public CalculatorState CurrentCalculatorState 
+        public CalculatorState CurrentCalculatorState
         {
-            get 
+            get
             {
                 return calculatorState;
             }
@@ -42,61 +45,62 @@ namespace CalcWPF.Model
         }
         public void enterBinaryOperation(string operation)
         {
-            
+
             double currentValue = double.Parse(Display);
             System.Diagnostics.Debug.WriteLine("currentValue:" + currentValue);
-            switch(CurrentCalculatorState)
+            switch (CurrentCalculatorState)
             {
-                    // calculator was accumulating digits and now operation arrived
-                    // so we execute previous operation and store this operation execution
-                    case CalculatorState.ACCUMULATE:
+                // calculator was accumulating digits and now operation arrived
+                // so we execute previous operation and store this operation execution
+                case CalculatorState.ACCUMULATE:
+                    {
+                        switch (lastOperation)
                         {
-                            switch (lastOperation)
-                            {
-                                case "+":
-                                    {
-                                        accumulator += currentValue;
-                                        break;
-                                    }
+                            case "+":
+                                {
+                                    log.Info("ADDITION, operand1: " + accumulator + " operand2: " + currentValue);
+                                    accumulator += currentValue;
+                                    break;
+                                }
 
-                                case "-":
+                            case "-":
+                                {
+                                    accumulator -= currentValue;
+                                    break;
+                                }
+                            case "*":
+                                {
+                                    accumulator *= currentValue;
+                                    break;
+                                }
+                            case "/":
+                                {
+                                    if (currentValue == 0)
                                     {
-                                        accumulator -= currentValue;
-                                        break;
+                                        throw new System.DivideByZeroException();
                                     }
-                                case "*":
-                                    {
-                                        accumulator *= currentValue;
-                                        break;
-                                    }
-                                case "/":
-                                    {
-                                        if(currentValue == 0)
-                                        {
-                                            throw new System.DivideByZeroException();
-                                        }
-                                        accumulator /= currentValue;
-                                        break;
-                                    }
+                                    accumulator /= currentValue;
+                                    break;
+                                }
 
-                                default:
-                                    {
-                                        accumulator = currentValue;
-                                        break;
-                                    }
+                            default:
+                                {
+                                    accumulator = currentValue;
+                                    break;
+                                }
 
-                            }
-                            lastOperation = operation;
-                            Display = accumulator.ToString();
-                            CurrentCalculatorState = CalculatorState.COMPUTE;
-                            return;
                         }
+                        lastOperation = operation;
+                        Display = accumulator.ToString();
+                        CurrentCalculatorState = CalculatorState.COMPUTE;
+                        return;
+                    }
                 case CalculatorState.EVALUATED:
-                        {
-                            CurrentCalculatorState = CalculatorState.COMPUTE;
-                            lastOperation = operation;
-                            return;
-                        }
+                    {
+                        CurrentCalculatorState = CalculatorState.COMPUTE;
+                        lastOperation = operation;
+                        return;
+                    }
                 default: return;
             }
 
@@ -104,16 +108,16 @@ namespace CalcWPF.Model
 
         public void enterDigit(string digit)
         {
-            if(digit.Length>1)
+            if (digit.Length > 1)
             {
                 throw new ArgumentException();
                 //digit = digit.Substring(0, 1);
             }
-            if(!(Regex.IsMatch(digit,"[0-9]")))
+            if (!(Regex.IsMatch(digit, "[0-9]")))
             {
                 throw new ArgumentException();
             }
-            switch(CurrentCalculatorState)
+            switch (CurrentCalculatorState)
             {
                 case CalculatorState.START:
                     {
@@ -121,19 +125,19 @@ namespace CalcWPF.Model
                         CurrentCalculatorState = CalculatorState.ACCUMULATE;
                         return;
                     }
-                    
+
                 case CalculatorState.ACCUMULATE:
                     {
                         Display = Display + digit;
                         return;
                     }
-                    
+
                 case CalculatorState.POINT:
                     {
                         Display = Display + digit;
                         return;
                     }
-                    
+
                 case CalculatorState.COMPUTE:
                     {
                         CurrentCalculatorState = CalculatorState.ACCUMULATE;
@@ -148,22 +152,24 @@ namespace CalcWPF.Model
                         CurrentCalculatorState = CalculatorState.ACCUMULATE;
                         return;
                     }
-                    
+
             }
-            
+
         }
 
         public void enterEquals()
         {
             double currentValue = double.Parse(Display);
             System.Diagnostics.Debug.WriteLine("currentValue:" + currentValue);
-            if(CurrentCalculatorState == CalculatorState.ACCUMULATE)
+            if (CurrentCalculatorState == CalculatorState.ACCUMULATE)
             {
                 switch (lastOperation)
                 {
                     case "+":
                         {
+                            log.Info("ADDITION, operand1: " + accumulator + " operand2: " + currentValue);
                             accumulator += currentValue;
+                            log.Info("ADDITION, result: " + accumulator);
                             break;
                         }
 
@@ -199,7 +205,7 @@ namespace CalcWPF.Model
                 CurrentCalculatorState = CalculatorState.EVALUATED;
 
             }
-            else if(CurrentCalculatorState == CalculatorState.COMPUTE)
+            else if (CurrentCalculatorState == CalculatorState.COMPUTE)
             {
                 lastOperation = "NO_OP";
                 CurrentCalculatorState = CalculatorState.EVALUATED;
@@ -210,7 +216,7 @@ namespace CalcWPF.Model
         public void enterSeparator()
         {
             System.Diagnostics.Debug.WriteLine("current state:" + CurrentCalculatorState);
-            if(CurrentCalculatorState == CalculatorState.ACCUMULATE)
+            if (CurrentCalculatorState == CalculatorState.ACCUMULATE)
             {
                 if (!Display.Contains(","))
                 {
@@ -222,7 +228,7 @@ namespace CalcWPF.Model
 
         public void enterUnaryOperation(string operation)
         {
-            if(CurrentCalculatorState == CalculatorState.ACCUMULATE)
+            if (CurrentCalculatorState == CalculatorState.ACCUMULATE)
             {
                 switch (operation)
                 {
@@ -240,7 +246,7 @@ namespace CalcWPF.Model
                             {
                                 case "+":
                                     {
-                                        accumulator += accumulator*percent;
+                                        accumulator += accumulator * percent;
                                         break;
                                     }
 
@@ -266,7 +272,7 @@ namespace CalcWPF.Model
 
                                 default:
                                     {
-                                        
+
                                         break;
                                     }
 
@@ -279,7 +285,7 @@ namespace CalcWPF.Model
                     case "sqrt":
                         {
                             double tmp = Double.Parse(Display);
-                            if(tmp<0)
+                            if (tmp < 0)
                             {
                                 throw new System.ArithmeticException();
                             }
@@ -288,7 +294,7 @@ namespace CalcWPF.Model
                         }
                 }
             }
-            else if(CurrentCalculatorState == CalculatorState.EVALUATED)
+            else if (CurrentCalculatorState == CalculatorState.EVALUATED)
             {
                 switch (operation)
                 {
@@ -316,7 +322,7 @@ namespace CalcWPF.Model
                         }
                 }
             }
-            
+
         }
         public void enterClear()
         {

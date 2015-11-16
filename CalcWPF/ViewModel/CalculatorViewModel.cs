@@ -27,7 +27,7 @@ namespace CalcWPF.ViewModel
             }
             set
             {
-                if(value == calculatorModel.Display)
+                if (value == calculatorModel.Display)
                 {
                     return;
                 }
@@ -43,7 +43,7 @@ namespace CalcWPF.ViewModel
             {
                 calculatorModel.enterDigit(obj as string);
                 base.OnPropertyChanged("Display");
-            }), o=>buttonsActive());
+            }), o => buttonsActive());
 
             enterBinaryOperationCommand = new RelayCommand(new Action<object>(delegate(object obj)
             {
@@ -56,22 +56,23 @@ namespace CalcWPF.ViewModel
                 {
 
                     errorMode = true;
+                    Display = "ERR";
                 }
-            }), o=>buttonsActive());
+            }), o => buttonsActive());
 
             enterUnaryOperation = new RelayCommand(new Action<object>(delegate(object obj)
+            {
+                try
                 {
-                    try
-                    {
-                        calculatorModel.enterUnaryOperation(obj as string);
-                        base.OnPropertyChanged("Display");
-                    }
-                    catch (Exception)
-                    {
+                    calculatorModel.enterUnaryOperation(obj as string);
+                    base.OnPropertyChanged("Display");
+                }
+                catch (Exception)
+                {
 
-                        errorMode = true;
-                    }
-                }), o => buttonsActive());
+                    errorMode = true;
+                }
+            }), o => buttonsActive());
 
             enterEqualsCommand = new RelayCommand(new Action<object>(delegate(object obj)
             {
@@ -84,20 +85,21 @@ namespace CalcWPF.ViewModel
                 {
 
                     errorMode = true;
+                    Display = "ERR";
                 }
             }), o => buttonsActive());
 
             enterClearCommand = new RelayCommand(new Action<object>(delegate(object obj)
-                {
-                    calculatorModel.enterClear();
-                    errorMode = false;
-                    base.OnPropertyChanged("Display");
-                }));
+            {
+                calculatorModel.enterClear();
+                errorMode = false;
+                base.OnPropertyChanged("Display");
+            }));
             enterSeparatorCommand = new RelayCommand(new Action<object>(delegate(object obj)
-                {
-                    calculatorModel.enterSeparator();
-                    base.OnPropertyChanged("Display");
-                }), o => buttonsActive());
+            {
+                calculatorModel.enterSeparator();
+                base.OnPropertyChanged("Display");
+            }), o => buttonsActive());
         }
 
         public bool buttonsActive()
