@@ -1,0 +1,67 @@
+﻿<Window x:Class="CalcWPF.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="clr-namespace:CalcWPF.View"
+        xmlns:vm="clr-namespace:CalcWPF.ViewModel"
+        
+        Title="Kalkulator" Height="480" Width="640" MaxHeight="960" MaxWidth="1280" MinHeight="240" MinWidth="320">
+    <Window.DataContext>
+        <vm:CalculatorViewModel/>
+    </Window.DataContext>
+    
+    <Grid  TextElement.FontSize="22" ShowGridLines="False" Background="Yellow">
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="2,2,2,2" />
+                <Setter Property="Command" Value="{Binding enterDigitCommand}" />
+                <Setter Property="Background" Value="Orange"/>
+                <Setter Property="BorderBrush" Value="OrangeRed" />
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+
+
+
+            </Style>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBox Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" Width="Auto" Height="Auto" IsReadOnly="True" Background="Yellow" TextAlignment="Right" Text="{Binding Path=Display}"/>
+
+        <Button Name="ButtonZero" Content="0"  Grid.Row="4" Grid.Column="0" CommandParameter="0"/>
+        <Button Name="ButtonSeparator" Content="."  Grid.Row="4" Grid.Column="1" Command="{Binding enterSeparatorCommand}" CommandParameter=","/>
+        <Button Name="ButtonPlusMinus" Content="+/-"  Grid.Row="4" Grid.Column="2" Command="{Binding enterUnaryOperation}" CommandParameter="+/-"/>
+        <Button Name="ButtonPlus" Content="+"  Grid.Row="4" Grid.Column="3" Command="{Binding enterBinaryOperationCommand}" CommandParameter="+"/>
+        <Button Name="ButtonOne" Content="1"  Grid.Row="3" Grid.Column="0" CommandParameter="1"/>
+        <Button Name="ButtonTwo" Content="2"  Grid.Row="3" Grid.Column="1" CommandParameter="2"/>
+        <Button Name="ButtonThree" Content="3"  Grid.Row="3" Grid.Column="2" CommandParameter="3"/>
+        <Button Name="ButtonMinus" Content="-"  Grid.Row="3" Grid.Column="3" Command="{Binding enterBinaryOperationCommand}" CommandParameter="-"/>
+        <Button Name="ButtonEqual" Content="="  Grid.Row="3" Grid.Column="4" Grid.RowSpan="2"  Command="{Binding enterEqualsCommand}" CommandParameter="="/>
+        <Button Name="ButtonFour" Content="4"  Grid.Row="2" Grid.Column="0" CommandParameter="4"/>
+        <Button Name="ButtonFive" Content="5"  Grid.Row="2" Grid.Column="1" CommandParameter="5"/>
+        <Button Name="ButtonSix" Content="6"  Grid.Row="2" Grid.Column="2" CommandParameter="6"/>
+        <Button Name="ButtonMultiply" Content="*"  Grid.Row="2" Grid.Column="3" Command="{Binding enterBinaryOperationCommand}" CommandParameter="*"/>
+        <Button Name="ButtonPercent" Content="%"  Grid.Row="2" Grid.Column="4" Command="{Binding enterUnaryOperation}" CommandParameter="%"/>
+        <Button Name="ButtonSeven" Content="7"  Grid.Row="1" Grid.Column="0" CommandParameter="7"/>
+        <Button Name="ButtonEight" Content="8"  Grid.Row="1" Grid.Column="1" CommandParameter="8"/>
+        <Button Name="ButtonNine" Content="9"  Grid.Row="1" Grid.Column="2" CommandParameter="9"/>
+        <Button Name="ButtonDivide" Content="/"  Grid.Row="1" Grid.Column="3" Command="{Binding enterBinaryOperationCommand}" CommandParameter="/"/>
+        <Button Name="ButtonSquareRoot" Content="sqrt"  Grid.Row="1" Grid.Column="4" Command="{Binding enterUnaryOperation}"  CommandParameter="sqrt"/>
+        <Button Name="ButtonClear" Content="C"  Grid.Row="0" Grid.Column="4" Command="{Binding enterClearCommand}" CommandParameter="C"/>
+
+    </Grid>
+</Window>
