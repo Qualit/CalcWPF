@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,13 @@ namespace CalcWPF.ViewModel
         public ICommand enterSeparatorCommand { get; set; }
 
 
+        public string Separator
+        {
+            get 
+            {
+                return calculatorModel.Separator;
+            }
+        }
         public string Display
         {
             get
@@ -71,6 +79,7 @@ namespace CalcWPF.ViewModel
                 {
 
                     errorMode = true;
+                    Display = "ERR";
                 }
             }), o => buttonsActive());
 

@@ -43,7 +43,7 @@
         <TextBox Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" Width="Auto" Height="Auto" IsReadOnly="True" Background="Yellow" TextAlignment="Right" Text="{Binding Path=Display}"/>
 
         <Button Name="ButtonZero" Content="0"  Grid.Row="4" Grid.Column="0" CommandParameter="0"/>
-        <Button Name="ButtonSeparator" Content="."  Grid.Row="4" Grid.Column="1" Command="{Binding enterSeparatorCommand}" CommandParameter=","/>
+        <Button Name="ButtonSeparator" Content="{Binding Separator}"  Grid.Row="4" Grid.Column="1" Command="{Binding enterSeparatorCommand}" CommandParameter="{Binding Separator}"/>
         <Button Name="ButtonPlusMinus" Content="+/-"  Grid.Row="4" Grid.Column="2" Command="{Binding enterUnaryOperation}" CommandParameter="+/-"/>
         <Button Name="ButtonPlus" Content="+"  Grid.Row="4" Grid.Column="3" Command="{Binding enterBinaryOperationCommand}" CommandParameter="+"/>
         <Button Name="ButtonOne" Content="1"  Grid.Row="3" Grid.Column="0" CommandParameter="1"/>

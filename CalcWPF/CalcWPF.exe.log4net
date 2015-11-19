@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <configSections>
-    <section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net"/>
+    <section name="log4net"
+    type="log4net.Config.Log4NetConfigurationSectionHandler,
+        log4net"/>
   </configSections>
   <log4net>
 
@@ -19,7 +21,7 @@
 
 
     <appender name="RollingFileAppender" type="log4net.Appender.RollingFileAppender">
-      <file value="..\\logi.txt" />
+      <file value="C:\Users\Mariusz\Desktop\Backup\LOGI.txt" />
       <appendToFile value="true" />
       <rollingStyle value="Size" />
       <maxSizeRollBackups value="5" />
@@ -31,14 +33,12 @@
     </appender>
 
     <logger name="CalcWPF">
-      <level value="INFO"/>
       <level value="DEBUG"/>
       <appender-ref ref="RollingFileAppender"/>
     </logger>
 
   </log4net>
 </configuration>
-
 
 
 

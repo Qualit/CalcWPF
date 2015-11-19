@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace CalcWPF.Model
 {
@@ -15,12 +16,17 @@ namespace CalcWPF.Model
         private double result;
         private double accumulator;
         private string lastOperation;
-        private bool freshDisplay;
-        //private string display;
 
         public enum CalculatorState { START, ACCUMULATE, COMPUTE, EVALUATED, POINT, ERROR };
         private CalculatorState calculatorState;
 
+        public string Separator
+        {
+            get
+            {
+                return NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
+            }
+        }
         public string Display { get; set; }
 
         public CalculatorState CurrentCalculatorState
@@ -41,7 +47,6 @@ namespace CalcWPF.Model
         {
             Display = "0";
             calculatorState = CalculatorState.START;
-            freshDisplay = true;
         }
         public void enterBinaryOperation(string operation)
         {
@@ -60,26 +65,33 @@ namespace CalcWPF.Model
                                 {
                                     log.Info("ADDITION, operand1: " + accumulator + " operand2: " + currentValue);
                                     accumulator += currentValue;
+                                    log.Info("ADDITION, result: " + accumulator);
                                     break;
                                 }
 
                             case "-":
                                 {
+                                    log.Info("SUBTRACTION, operand1: " + accumulator + " operand2: " + currentValue);
                                     accumulator -= currentValue;
+                                    log.Info("SUBTRACTION, result: " + accumulator);
                                     break;
                                 }
                             case "*":
                                 {
+                                    log.Info("MULTIPLICATION, operand1: " + accumulator + " operand2: " + currentValue);
                                     accumulator *= currentValue;
+                                    log.Info("MULTIPLICATION, result: " + accumulator);
                                     break;
                                 }
                             case "/":
                                 {
+                                    log.Info("DIVISION, operand1: " + accumulator + " operand2: " + currentValue);
                                     if (currentValue == 0)
                                     {
                                         throw new System.DivideByZeroException();
                                     }
                                     accumulator /= currentValue;
+                                    log.Info("DIVISION, result: " + accumulator);
                                     break;
                                 }
 
@@ -159,6 +171,7 @@ namespace CalcWPF.Model
 
         public void enterEquals()
         {
+            //log.Debug("Equals!!!!!!");
             double currentValue = double.Parse(Display);
             System.Diagnostics.Debug.WriteLine("currentValue:" + currentValue);
             if (CurrentCalculatorState == CalculatorState.ACCUMULATE)
@@ -175,21 +188,27 @@ namespace CalcWPF.Model
 
                     case "-":
                         {
+                            log.Info("SUBTRACTION, operand1: " + accumulator + " operand2: " + currentValue);
                             accumulator -= currentValue;
+                            log.Info("SUBTRACTION, result: " + accumulator);
                             break;
                         }
                     case "*":
                         {
+                            log.Info("MULTIPLICATION, operand1: " + accumulator + " operand2: " + currentValue);
                             accumulator *= currentValue;
+                            log.Info("MULTIPLICATION, result: " + accumulator);
                             break;
                         }
                     case "/":
                         {
+                            log.Info("DIVISION, operand1: " + accumulator + " operand2: " + currentValue);
                             if (currentValue == 0)
                             {
                                 throw new System.DivideByZeroException();
                             }
                             accumulator /= currentValue;
+                            log.Info("DIVISION, result: " + accumulator);
                             break;
                         }
 
@@ -215,12 +234,12 @@ namespace CalcWPF.Model
 
         public void enterSeparator()
         {
-            System.Diagnostics.Debug.WriteLine("current state:" + CurrentCalculatorState);
+            //System.Diagnostics.Debug.WriteLine("current state:" + CurrentCalculatorState);
             if (CurrentCalculatorState == CalculatorState.ACCUMULATE)
             {
-                if (!Display.Contains(","))
+                if (!Display.Contains(Separator))
                 {
-                    Display += ",";
+                    Display += Separator;
                 }
             }
 
@@ -235,7 +254,9 @@ namespace CalcWPF.Model
                     case "+/-":
                         {
                             double tmp = Double.Parse(Display);
+                            log.Info("CHANGE_SIGN, operand: " + tmp);
                             Display = Convert.ToString(tmp * (-1));
+                            log.Info("CHANGE_SIGN, result: " + Display);
                             break;
                         }
                     case "%":
@@ -285,11 +306,13 @@ namespace CalcWPF.Model
                     case "sqrt":
                         {
                             double tmp = Double.Parse(Display);
+                            log.Info("SQ_ROOT, operand: " + tmp);
                             if (tmp < 0)
                             {
                                 throw new System.ArithmeticException();
                             }
                             Display = Convert.ToString(Math.Sqrt(tmp));
+                            log.Info("SQ_ROOT, result: " + Display);
                             break;
                         }
                 }
@@ -301,7 +324,9 @@ namespace CalcWPF.Model
                     case "+/-":
                         {
                             double tmp = Double.Parse(Display);
+                            log.Info("CHANGE_SIGN, operand: " + tmp);
                             Display = Convert.ToString(tmp * (-1));
+                            log.Info("CHANGE_SIGN, result: " + Display);
                             accumulator = Double.Parse(Display);
                             break;
                         }
@@ -312,11 +337,13 @@ namespace CalcWPF.Model
                     case "sqrt":
                         {
                             double tmp = Double.Parse(Display);
+                            log.Info("SQ_ROOT, operand: " + tmp);
                             if (tmp < 0)
                             {
                                 throw new System.ArithmeticException();
                             }
                             Display = Convert.ToString(Math.Sqrt(tmp));
+                            log.Info("SQ_ROOT, result: " + Display);
                             accumulator = Double.Parse(Display);
                             break;
                         }
@@ -326,6 +353,7 @@ namespace CalcWPF.Model
         }
         public void enterClear()
         {
+            log.Info("CLEAR");
             Display = "0";
             accumulator = 0;
             lastOperation = "NO_OP";
